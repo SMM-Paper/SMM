@@ -1,0 +1,6 @@
+[submodule "ChampSim"]
+	path = ChampSim
+	url = git@github.com:fire3/ChampSim.git
+[submodule "linux"]
+	path = linux
+	url = git@github.com:fire3/linux.git
