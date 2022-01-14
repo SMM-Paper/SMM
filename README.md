@@ -54,6 +54,19 @@ echo 0 > /proc/sys/kernel/randomize_va_space
 The pintool used can be found in tools/pintool.
 
 
+The ChampSim with 4KB or 2MB page size can be compiled with the following method:
+
+```
+./config.sh ./champsim_config.json
+rm bin/champsim.*
+sed -i "s/PAGE_SIZE 4096u/PAGE_SIZE 2097152u/g" inc/champsim_constants.h
+make -j8
+cp bin/champsim bin/champsim.2m
+sed -i "s/PAGE_SIZE 2097152u/PAGE_SIZE 4096u/g" inc/champsim_constants.h
+make -j8
+cp bin/champsim bin/champsim.4k
+
+```
 
 * TLB-4KB:
 
