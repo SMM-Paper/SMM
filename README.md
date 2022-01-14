@@ -38,3 +38,83 @@ We implement SMM in Linux kernel v5.7.  The total newly added or modified source
 # Workloads
 
 We use micro-benchmark and comprehensive benchmarks to evaluate. The micro-benchmark is [test-tlb](https://github.com/torvalds/test-tlb) for quick memory latency and TLB test. For comprehensive benchmarks, we consider all the benchmarks from [SPEC CPU 2017](https://www.spec.org/cpu2017/) and big data workloads included in [GAP suite](https://github.com/sbeamer/gapbs) and the [XSBench](https://github.com/ANL-CESAR/XSBench). We choose six graph benchmarks from the GAP suite. The input data is generated with a Kronecker graph generator with the same parameters as Graph 500 (A=0.57, B=C=0.19, D=0.05). All traces were obtained using the [Pin](https://www.intel.com/content/www/us/en/developer/articles/tool/pin-a-dynamic-binary-instrumentation-tool.html) methodology. Each SPEC workload runs 1 million warmup instructions and one billion instructions are executed to measure the experimental results. For the test-tlb, GAP and XSBench workloads,  we use 1 million warmup instructions and 100 million instructions for measuring the results.
+
+
+# SMM ChampSim Usage Example
+
+
+The traces are obtained manually following ChampSim instructions.
+
+For convenience, we currently disable the randmaps (ASLR) with the following command  to record traces.
+
+```
+echo 0 > /proc/sys/kernel/randomize_va_space 
+```
+
+The pintool used can be found in tools/pintool.
+
+
+
+* TLB-4KB:
+
+```
+champsim.4k  -c 8M -h 4G -m 64G -s 1G -i 1000000000 -traces test.trace
+```
+
+* TLB-2MB
+
+```
+champsim.2m  -c 8M -h 4G -m 64G -s 1G -i 1000000000 -traces test.trace
+
+```
+
+* IdealRMM
+
+```
+champsim.4k  -c 8M -h 4G -m 64G -s 1G -rmm -i 1000000000 -traces test.trace
+```
+
+* IdealDS
+
+```
+champsim.4k  -c 8M -h 4G -m 64G -s 1G -direct_segment -i 1000000000 -traces test.trace
+
+```
+
+* SMM-4K
+
+```
+champsim.4k  -c 8M -h 4G -m 64G -s 1G -smm -i 1000000000 -traces test.trace
+
+```
+
+* SMM-2M
+
+```
+champsim.2m  -c 8M -h 4G -m 64G -s 1G -smm -i 1000000000 -traces test.trace
+
+```
+
+
+
+# SMM Kernel Setup
+
+The current implementation only support X86_64 for now. Make sure to select kernel config as follows:
+
+
+```
+CONFIG_TRANSPARENT_SEGMENTPAGE=y
+```
+
+The current SMM kernel should booted with the following command line.
+
+```
+norandmaps smm_reserve=40g vdso=0
+```
+
+The above command line will reserve 40GB  memory for SMM segmentation usage.
+
+For convenience, we currently disable the randmaps (ASLR) and vdso functions.
+
+For test SMM application and kernel  on common X86_64 platform, follow the instructions in tools/micro_pgfault and tools/smm_elf_hack.
+
