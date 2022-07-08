@@ -116,18 +116,13 @@ The current implementation only support X86_64 for now. Make sure to select kern
 
 
 ```
-CONFIG_TRANSPARENT_SEGMENTPAGE=y
+CONFIG_SMM=y
 ```
 
 The current SMM kernel should booted with the following command line.
 
 ```
-norandmaps smm_reserve=40g vdso=0
+smm_reserve=120g
 ```
 
-The above command line will reserve 40GB  memory for SMM segmentation usage.
-
-For convenience, we currently disable the randmaps (ASLR) and vdso functions.
-
-For test SMM application and kernel  on common X86_64 platform, follow the instructions in tools/micro_pgfault and tools/smm_elf_hack.
-
+The above command line will reserve 120GB  memory for SMM segmentation usage.
